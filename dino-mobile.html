@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./CSS mobile/dino-mobile.css">
+  <title>Dino desktop & moblie</title>
+
+</head>
+
+<body>
+  <div class="box">
+    <div class="value">0</div>
+    <div class="game-over">GAME OVER</div>
+    <div class="again"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="dino" tabindex="0"></div>
+    <div class="cactus">
+      <div class="block block1"></div>
+      <div class="block block2"></div>
+      <div class="block block3"></div>
+      <div class="block block4"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const dino = document.querySelector('.dino');
+
+    const blocks = document.querySelectorAll('.block');
+
+    const again = document.querySelector('.again');
+
+    let count = 0;
+
+    function jump() {
+      if (dino.classList.contains('active')) return;
+
+      dino.classList.add('active');
+
+      setTimeout(() => {
+        dino.classList.remove('active');
+      }, 600);
+    }
+
+    /* 鍵盤 */
+    document.addEventListener('keydown', function (e) {
+      if (e.code === 'Space') {
+        jump();
+      }
+    });
+
+    /* 手機點擊 / 觸控 */
+    document.addEventListener('touchstart', function () {
+      jump();
+    });
+
+    document.addEventListener('click', function () {
+      jump();
+    });
+
+    const timer = setInterval(function () {
+      count++;
+      document.querySelector('.value').innerText = count
+    }, 100)
+
+    let gameEnd = setInterval(function () {
+
+      let dinoRect = dino.getBoundingClientRect();
+
+      blocks.forEach(block => {
+        let blockRect = block.getBoundingClientRect();
+
+        if (
+          dinoRect.right > blockRect.left &&
+          dinoRect.left < blockRect.right &&
+          dinoRect.bottom > blockRect.top &&
+          dinoRect.top < blockRect.bottom
+        ) {
+
+          // 停止所有仙人掌動畫
+          blocks.forEach(b => {
+            b.style.animation = 'none';
+          });
+
+          const gameOver = document.querySelector('.game-over');
+
+          again.style.display = 'block';
+          gameOver.style.display = 'block';
+
+          // 暫停所有動畫
+          document.querySelectorAll('*').forEach(el => {
+            el.style.animationPlayState = 'paused';
+          });
+
+          clearInterval(timer);
+          clearInterval(gameEnd);
+        }
+      });
+
+    }, 20);
+
+    again.addEventListener('click', function () {
+      location.reload();
+    })
+  </script>
+</body>
+
+</html>
